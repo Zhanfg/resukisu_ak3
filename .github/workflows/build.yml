@@ -22,7 +22,7 @@ jobs:
 
     - name: Clone kernel source
       run: |
-        git clone https://github.com/crdroidandroid/android_kernel_oneplus_sdm845 -b lineage-20 kernel
+        git clone https://github.com/crdroidandroid/android_kernel_oneplus_sdm845 kernel
 
     - name: Clone ReSukiSU
       run: |

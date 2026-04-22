@@ -22,7 +22,7 @@ jobs:
 
     - name: Clone kernel source
       run: |
-        git clone https://github.com/crdroidandroid/android_kernel_oneplus_sdm845 kernel
+        git clone https://github.com/TJ-Releases/crDroidPlusPlus_kernel kernel
 
     - name: Clone ReSukiSU
       run: |
@@ -31,10 +31,12 @@ jobs:
     - name: Generate ReSukiSU patch
       run: |
         cd kernel
-        # 将 ReSukiSU 的内核代码复制到源码（示例路径，需根据实际调整）
-        cp -r ../resukisu/kernel/* ./ 
-        # 生成 patch 文件
-        git diff > ../resukisu.patch
+        # 只复制 ReSukiSU 驱动目录，避免覆盖 include/uapi 等已有目录
+        cp -r ../resukisu/kernel/drivers/resukisu ./drivers/
+        # 添加到 git 暂存区
+        git add drivers/resukisu
+        # 生成补丁文件
+        git diff --cached > ../resukisu.patch
 
     - name: Apply ReSukiSU patch
       run: |

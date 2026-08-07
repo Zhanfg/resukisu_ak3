@@ -46,7 +46,7 @@ fi
 rm -f "$link_path"
 ln -s "$(realpath --relative-to="$drivers_dir" "$resukisu_kernel")" "$link_path"
 
-make_line='obj-$(CONFIG_KSU) += kernelsu/'
+make_line="obj-\$(CONFIG_KSU) += kernelsu/"
 if ! grep -Fqx "$make_line" "$drivers_makefile"; then
   printf '\n%s\n' "$make_line" >> "$drivers_makefile"
 fi

@@ -17,6 +17,8 @@ defconfig_rel="$2"
 
 [[ "$defconfig_rel" != /* ]] || fail "defconfig path must be relative"
 [[ "$defconfig_rel" != *".."* ]] || fail "defconfig path must not contain '..'"
+[[ "$defconfig_rel" == arch/arm64/configs/*_defconfig ]] || \
+  fail "defconfig must be under arch/arm64/configs/ and end with _defconfig"
 
 [[ -f "$kernel_root/Makefile" ]] || fail "kernel Makefile is missing"
 [[ -f "$kernel_root/$defconfig_rel" ]] || fail "defconfig is missing: $defconfig_rel"
@@ -37,9 +39,20 @@ grep -Eq '^VERSION[[:space:]]*=[[:space:]]*4([[:space:]]|$)' "$kernel_root/Makef
 grep -Eq '^PATCHLEVEL[[:space:]]*=[[:space:]]*9([[:space:]]|$)' "$kernel_root/Makefile" || \
   fail "this builder is restricted to Linux 4.9 sources"
 
-# ReSukiSU manual-hook mode requires kernel-side call sites. These checks are
-# intentionally performed before integration so a README-only or unpatched
-# source tree fails with a useful message rather than after a long compile.
+# ReSukiSU manual-hook mode requires kernel-side call sites. Declarations,
+# comments and preprocessor lines are deliberately ignored to avoid treating
+# a documented but unimplemented hook as a valid integration.
+has_hook_call() {
+  local source_file="$1"
+  local marker="$2"
+
+  awk -v marker="$marker" '
+    /^[[:space:]]*(extern([[:space:]]|$)|\/\/|\/\*|\*|#)/ { next }
+    $0 ~ marker "[[:space:]]*\\(" { found = 1 }
+    END { exit(found ? 0 : 1) }
+  ' "$source_file"
+}
+
 declare -A required_hooks=(
   ["fs/stat.c"]="ksu_handle_stat"
   ["fs/exec.c"]="ksu_handle_execve"
@@ -49,9 +62,10 @@ declare -A required_hooks=(
 
 for relative_path in "${!required_hooks[@]}"; do
   marker="${required_hooks[$relative_path]}"
-  [[ -f "$kernel_root/$relative_path" ]] || fail "required source file is missing: $relative_path"
-  grep -q "$marker" "$kernel_root/$relative_path" || \
-    fail "manual ReSukiSU hook marker '$marker' is missing from $relative_path"
+  source_file="$kernel_root/$relative_path"
+  [[ -f "$source_file" ]] || fail "required source file is missing: $relative_path"
+  has_hook_call "$source_file" "$marker" || \
+    fail "manual ReSukiSU hook call '$marker(...)' is missing from $relative_path"
 done
 
-echo "[OK] Linux 4.9 source tree, defconfig and minimum manual-hook markers validated"
+echo "[OK] Linux 4.9 source tree, arm64 defconfig and minimum manual-hook calls validated"

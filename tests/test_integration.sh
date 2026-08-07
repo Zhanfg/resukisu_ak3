@@ -40,15 +40,19 @@ EOF
 
 cat > "$kernel/fs/stat.c" <<'EOF'
 extern int ksu_handle_stat(void);
+void test_stat_hook(void) { ksu_handle_stat(); }
 EOF
 cat > "$kernel/fs/exec.c" <<'EOF'
 extern int ksu_handle_execveat(void);
+void test_exec_hook(void) { ksu_handle_execveat(); }
 EOF
 cat > "$kernel/fs/open.c" <<'EOF'
 extern int ksu_handle_faccessat(void);
+void test_access_hook(void) { ksu_handle_faccessat(); }
 EOF
 cat > "$kernel/kernel/reboot.c" <<'EOF'
 extern int ksu_handle_sys_reboot(void);
+void test_reboot_hook(void) { ksu_handle_sys_reboot(); }
 EOF
 
 cat > "$resukisu/kernel/Kconfig" <<'EOF'
@@ -85,12 +89,31 @@ if bash "$repo_root/scripts/validate_kernel_source.sh" "$kernel" "$defconfig_rel
 fi
 mv "$kernel/Makefile.good" "$kernel/Makefile"
 
-# Missing manual hook must fail with a clear validation error.
+# Missing source file must fail with a clear validation error.
 mv "$kernel/fs/open.c" "$kernel/fs/open.c.saved"
 if bash "$repo_root/scripts/validate_kernel_source.sh" "$kernel" "$defconfig_rel"; then
-  echo "expected missing faccessat hook fixture to be rejected" >&2
+  echo "expected missing faccessat hook source to be rejected" >&2
   exit 1
 fi
 mv "$kernel/fs/open.c.saved" "$kernel/fs/open.c"
+
+# A declaration or comment without an actual call must not pass validation.
+cp "$kernel/fs/open.c" "$kernel/fs/open.c.good"
+cat > "$kernel/fs/open.c" <<'EOF'
+extern int ksu_handle_faccessat(void);
+/* ksu_handle_faccessat(); documented but not integrated */
+EOF
+if bash "$repo_root/scripts/validate_kernel_source.sh" "$kernel" "$defconfig_rel"; then
+  echo "expected declaration-only faccessat marker to be rejected" >&2
+  exit 1
+fi
+mv "$kernel/fs/open.c.good" "$kernel/fs/open.c"
+
+# Defconfig paths outside arch/arm64/configs are not accepted.
+cp "$kernel/$defconfig_rel" "$kernel/bad_defconfig"
+if bash "$repo_root/scripts/validate_kernel_source.sh" "$kernel" "bad_defconfig"; then
+  echo "expected non-arm64 defconfig path to be rejected" >&2
+  exit 1
+fi
 
 echo "All integration tests passed"

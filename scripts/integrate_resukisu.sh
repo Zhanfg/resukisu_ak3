@@ -18,6 +18,8 @@ defconfig_rel="$3"
 
 [[ "$defconfig_rel" != /* ]] || fail "defconfig path must be relative"
 [[ "$defconfig_rel" != *".."* ]] || fail "defconfig path must not contain '..'"
+[[ "$defconfig_rel" == arch/arm64/configs/*_defconfig ]] || \
+  fail "defconfig must be under arch/arm64/configs/ and end with _defconfig"
 
 if [[ -d "$kernel_root/common/drivers" ]]; then
   drivers_dir="$kernel_root/common/drivers"

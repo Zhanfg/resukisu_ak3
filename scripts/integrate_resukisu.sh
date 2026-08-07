@@ -77,8 +77,14 @@ set_config_y() {
   fi
 }
 
+# Linux 4.9 can use the three supported automatic hook paths. Pinning them to
+# y keeps the required source hook set deterministic and avoids inheriting an
+# old defconfig that silently disables one of them.
 set_config_y KSU
 set_config_y KSU_MANUAL_HOOK
+set_config_y KSU_MANUAL_HOOK_AUTO_SETUID_HOOK
+set_config_y KSU_MANUAL_HOOK_AUTO_INITRC_HOOK
+set_config_y KSU_MANUAL_HOOK_AUTO_INPUT_HOOK
 
 echo "[OK] ReSukiSU integrated through drivers/kernelsu"
-echo "[OK] CONFIG_KSU=y and CONFIG_KSU_MANUAL_HOOK=y enabled in $defconfig_rel"
+echo "[OK] Manual Hook and all Linux 4.9 auto-hook options enabled in $defconfig_rel"

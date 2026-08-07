@@ -1,68 +1,213 @@
-name: Build ReSukiSU Kernel
+name: Validate and Build ReSukiSU 4.9 AK3
+
+permissions:
+  contents: read
 
 on:
-  workflow_dispatch:
+  pull_request:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      kernel_repository:
+        description: "Complete Linux 4.9 kernel source in owner/repository form"
+        required: true
+        type: string
+      kernel_commit:
+        description: "Exact 40-character kernel commit SHA"
+        required: true
+        type: string
+      defconfig_path:
+        description: "Path relative to the kernel root"
+        required: true
+        default: "arch/arm64/configs/sdm845_defconfig"
+        type: string
+      kernel_image_path:
+        description: "Built image path relative to the O=out directory"
+        required: true
+        default: "arch/arm64/boot/Image.gz-dtb"
+        type: string
+      resukisu_commit:
+        description: "Exact 40-character ReSukiSU commit SHA"
+        required: true
+        default: "058cdc931016cb2cb769ed063cce6d65d6df61e0"
+        type: string
+      anykernel_repository:
+        description: "Device-specific, preconfigured AnyKernel3 repository"
+        required: true
+        type: string
+      anykernel_commit:
+        description: "Exact 40-character AnyKernel3 commit SHA"
+        required: true
+        type: string
+      ak3_image_name:
+        description: "Image filename expected by the device-specific AK3 package"
+        required: true
+        default: "Image.gz-dtb"
+        type: string
+
+concurrency:
+  group: resukisu-ak3-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Check shell scripts
+        run: shellcheck scripts/*.sh tests/*.sh
+
+      - name: Run integration tests
+        run: bash tests/test_integration.sh
+
+  build:
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    env:
+      KERNEL_REPOSITORY: ${{ inputs.kernel_repository }}
+      KERNEL_COMMIT: ${{ inputs.kernel_commit }}
+      DEFCONFIG_PATH: ${{ inputs.defconfig_path }}
+      KERNEL_IMAGE_PATH: ${{ inputs.kernel_image_path }}
+      RESUKISU_COMMIT: ${{ inputs.resukisu_commit }}
+      ANYKERNEL_REPOSITORY: ${{ inputs.anykernel_repository }}
+      ANYKERNEL_COMMIT: ${{ inputs.anykernel_commit }}
+      AK3_IMAGE_NAME: ${{ inputs.ak3_image_name }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout builder
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-    - name: Install dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y git build-essential bc flex bison libssl-dev \
-          gcc-aarch64-linux-gnu g++-aarch64-linux-gnu clang zip unzip
+      - name: Validate workflow inputs
+        shell: bash
+        run: |
+          set -euo pipefail
 
-    - name: Clone kernel source
-      run: |
-        git clone https://github.com/TJ-Releases/crDroidPlusPlus_kernel kernel
+          repo_pattern='^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'
+          sha_pattern='^[0-9a-fA-F]{40}$'
 
-    - name: Clone ReSukiSU
-      run: |
-        git clone https://github.com/ReSukiSU/ReSukiSU resukisu
+          [[ "$KERNEL_REPOSITORY" =~ $repo_pattern ]]
+          [[ "$ANYKERNEL_REPOSITORY" =~ $repo_pattern ]]
+          [[ "$KERNEL_COMMIT" =~ $sha_pattern ]]
+          [[ "$RESUKISU_COMMIT" =~ $sha_pattern ]]
+          [[ "$ANYKERNEL_COMMIT" =~ $sha_pattern ]]
 
-    - name: Generate ReSukiSU patch
-      run: |
-        cd kernel
-        # 只复制 ReSukiSU 驱动目录，避免覆盖 include/uapi 等已有目录
-        cp -r ../resukisu/kernel/drivers/resukisu ./drivers/
-        # 添加到 git 暂存区
-        git add drivers/resukisu
-        # 生成补丁文件
-        git diff --cached > ../resukisu.patch
+          for relative_path in "$DEFCONFIG_PATH" "$KERNEL_IMAGE_PATH"; do
+            [[ "$relative_path" != /* ]]
+            [[ "$relative_path" != *".."* ]]
+          done
 
-    - name: Apply ReSukiSU patch
-      run: |
-        cd kernel
-        git apply ../resukisu.patch
+          [[ -n "$AK3_IMAGE_NAME" ]]
+          [[ "$AK3_IMAGE_NAME" != */* ]]
+          [[ "$AK3_IMAGE_NAME" != *".."* ]]
 
-    - name: Build kernel
-      run: |
-        cd kernel
-        make O=out ARCH=arm64 sdm845_defconfig
-        make -j$(nproc) O=out ARCH=arm64 \
-          CROSS_COMPILE=aarch64-linux-gnu- \
-          CC=clang
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            bc bison build-essential clang flex gcc-aarch64-linux-gnu \
+            g++-aarch64-linux-gnu git libelf-dev libssl-dev lld zip
 
-    - name: Clone AnyKernel3
-      run: |
-        git clone https://github.com/osm0sis/AnyKernel3 ak3
+      - name: Fetch exact source commits
+        shell: bash
+        run: |
+          set -euo pipefail
 
-    - name: Package with AnyKernel3
-      run: |
-        cp kernel/out/arch/arm64/boot/Image.gz-dtb ak3/
-        cd ak3
-        zip -r9 ../ReSukiSU-ak3.zip *
+          fetch_exact_commit() {
+            local destination="$1"
+            local repository="$2"
+            local commit="$3"
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ReSukiSU-ak3
-        path: ReSukiSU-ak3.zip
+            git init "$destination"
+            git -C "$destination" remote add origin "https://github.com/${repository}.git"
+            git -C "$destination" fetch --no-tags --depth=1 origin "$commit"
+            git -C "$destination" checkout --detach FETCH_HEAD
+
+            actual="$(git -C "$destination" rev-parse HEAD)"
+            [[ "${actual,,}" == "${commit,,}" ]]
+          }
+
+          fetch_exact_commit kernel "$KERNEL_REPOSITORY" "$KERNEL_COMMIT"
+          fetch_exact_commit resukisu ReSukiSU/ReSukiSU "$RESUKISU_COMMIT"
+          fetch_exact_commit ak3 "$ANYKERNEL_REPOSITORY" "$ANYKERNEL_COMMIT"
+
+      - name: Validate kernel and AnyKernel3 sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/validate_kernel_source.sh kernel "$DEFCONFIG_PATH"
+
+          [[ -f ak3/anykernel.sh ]]
+          if ! grep -Eq '^device\.name[1-5]=.+' ak3/anykernel.sh; then
+            echo "[ERROR] AnyKernel3 package has no configured device.name entry" >&2
+            exit 1
+          fi
+
+      - name: Integrate pinned ReSukiSU source
+        run: bash scripts/integrate_resukisu.sh kernel resukisu "$DEFCONFIG_PATH"
+
+      - name: Build Linux 4.9 kernel
+        shell: bash
+        run: |
+          set -euo pipefail
+          defconfig_target="${DEFCONFIG_PATH#arch/arm64/configs/}"
+
+          make -C kernel O=out ARCH=arm64 "$defconfig_target"
+          make -C kernel -j"$(nproc)" O=out ARCH=arm64 \
+            CROSS_COMPILE=aarch64-linux-gnu- \
+            CLANG_TRIPLE=aarch64-linux-gnu- \
+            CC=clang HOSTCC=clang HOSTCXX=clang++
+
+          [[ -s "kernel/out/$KERNEL_IMAGE_PATH" ]]
+
+      - name: Package device-specific AnyKernel3 ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cp "kernel/out/$KERNEL_IMAGE_PATH" "ak3/$AK3_IMAGE_NAME"
+
+          kernel_sha="$(git -C kernel rev-parse HEAD)"
+          resukisu_sha="$(git -C resukisu rev-parse HEAD)"
+          anykernel_sha="$(git -C ak3 rev-parse HEAD)"
+          image_sha="$(sha256sum "kernel/out/$KERNEL_IMAGE_PATH" | awk '{print $1}')"
+
+          cat > ak3/build-manifest.txt <<EOF
+          kernel_repository=$KERNEL_REPOSITORY
+          kernel_commit=$kernel_sha
+          resukisu_commit=$resukisu_sha
+          anykernel_repository=$ANYKERNEL_REPOSITORY
+          anykernel_commit=$anykernel_sha
+          defconfig_path=$DEFCONFIG_PATH
+          kernel_image_path=$KERNEL_IMAGE_PATH
+          packaged_image_name=$AK3_IMAGE_NAME
+          kernel_image_sha256=$image_sha
+          EOF
+
+          rm -rf ak3/.git
+          (
+            cd ak3
+            zip -r9 ../ReSukiSU-4.9-AK3.zip .
+          )
+
+          sha256sum ReSukiSU-4.9-AK3.zip > ReSukiSU-4.9-AK3.zip.sha256
+
+      - name: Upload reproducible build artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ReSukiSU-4.9-AK3-${{ inputs.kernel_commit }}
+          path: |
+            ReSukiSU-4.9-AK3.zip
+            ReSukiSU-4.9-AK3.zip.sha256
+          if-no-files-found: error
+          retention-days: 14

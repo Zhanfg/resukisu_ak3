@@ -30,8 +30,10 @@ tests/test_integration.sh         # 集成脚本和失败路径测试
 
 - ShellCheck；
 - Linux 4.9 源树夹具测试；
-- 缺失 Manual Hook 时必须失败；
-- 错误内核版本必须失败；
+- 声明或注释不能冒充实际 Hook 调用；
+- 缺失任一固定版本要求的 Hook 时必须失败；
+- 出现旧式不兼容 Hook 时必须失败；
+- 错误内核版本或错误 defconfig 路径必须失败；
 - ReSukiSU 重复集成必须保持幂等；
 - Kconfig、Makefile、符号链接和 defconfig 修改必须正确。
 
@@ -45,7 +47,7 @@ tests/test_integration.sh         # 集成脚本和失败路径测试
 |---|---|
 | `kernel_repository` | 完整 Linux 4.9 源码仓库，格式为 `owner/repository` |
 | `kernel_commit` | 内核源码的完整 40 位 commit SHA |
-| `defconfig_path` | 相对于内核根目录的 defconfig 路径 |
+| `defconfig_path` | `arch/arm64/configs/` 下以 `_defconfig` 结尾的路径 |
 | `kernel_image_path` | 相对于 `O=out` 的最终镜像路径 |
 | `resukisu_commit` | ReSukiSU 的完整 40 位 commit SHA |
 | `anykernel_repository` | 已针对目标设备配置的 AnyKernel3 仓库 |
@@ -58,14 +60,36 @@ tests/test_integration.sh         # 集成脚本和失败路径测试
 - `ReSukiSU-4.9-AK3.zip.sha256`；
 - ZIP 内的 `build-manifest.txt`，记录三个源码 commit 和内核镜像 SHA-256。
 
-## 内核源树前置条件
+## 固定 ReSukiSU 基线
 
-内核必须已经包含 ReSukiSU Manual Hook 调用点。当前验证器至少检查：
+默认基线为：
 
-- `fs/stat.c`：`ksu_handle_stat`；
-- `fs/exec.c`：`ksu_handle_execve` 或 `ksu_handle_execveat`；
-- `fs/open.c`：`ksu_handle_faccessat`；
-- `kernel/reboot.c`：`ksu_handle_sys_reboot`。
+```text
+058cdc931016cb2cb769ed063cce6d65d6df61e0
+```
+
+验证器按该 commit 的 `kernel/tools/manual_hook_check.mk` 对齐。更换 `resukisu_commit` 前，必须同步审查并更新验证规则，不能只替换 SHA。
+
+## Linux 4.9 Manual Hook 前置条件
+
+内核源码必须包含以下**实际函数调用**，仅有声明、注释或文档字符串不算通过：
+
+| 文件 | 必需调用 |
+|---|---|
+| `fs/exec.c` | `ksu_handle_execveat(...)` |
+| `fs/open.c` | `ksu_handle_faccessat(...)` |
+| `fs/stat.c` | `ksu_handle_stat(...)` |
+| `fs/stat.c` | `ksu_handle_newfstat_ret(...)` |
+| `fs/stat.c` | `ksu_handle_fstat64_ret(...)` |
+| `kernel/reboot.c` | `ksu_handle_sys_reboot(...)` |
+
+固定基线还明确拒绝以下旧式或不兼容标记：
+
+| 文件 | 禁止标记 |
+|---|---|
+| `fs/read_write.c` | `ksu_vfs_read_hook` |
+| `security/selinux/hooks.c` | `is_ksu_transition` |
+| `security/security.c` | `ksu_handle_rename` |
 
 集成脚本随后执行：
 
@@ -73,9 +97,13 @@ tests/test_integration.sh         # 集成脚本和失败路径测试
 - 向驱动 Makefile 添加 `obj-$(CONFIG_KSU) += kernelsu/`；
 - 向驱动 Kconfig 添加 `source "drivers/kernelsu/Kconfig"`；
 - 启用 `CONFIG_KSU=y`；
-- 启用 `CONFIG_KSU_MANUAL_HOOK=y`。
+- 启用 `CONFIG_KSU_MANUAL_HOOK=y`；
+- 强制启用以下 Linux 4.9 可用的自动 Hook：
+  - `CONFIG_KSU_MANUAL_HOOK_AUTO_SETUID_HOOK=y`；
+  - `CONFIG_KSU_MANUAL_HOOK_AUTO_INITRC_HOOK=y`；
+  - `CONFIG_KSU_MANUAL_HOOK_AUTO_INPUT_HOOK=y`。
 
-如果实际内核还需要其他设备补丁或 Hook，必须先在内核源码仓库中完成并单独审查。
+如果实际内核还需要设备补丁、工具链参数或其他 Hook，必须先在内核源码仓库中完成并单独审查。
 
 ## AnyKernel3 要求
 
@@ -91,7 +119,9 @@ tests/test_integration.sh         # 集成脚本和失败路径测试
 
 ## 安全说明
 
-CI 编译成功只表示源码能够构建和打包，不代表 ZIP 可直接刷入。刷入前仍应：
+PR 验证成功只表示脚本、固定规则和测试夹具通过。手动内核构建成功也只表示指定源码能够编译和打包，均不代表 ZIP 可直接刷入。
+
+刷入前仍应：
 
 1. 核对目标设备、ROM、内核版本和启动分区；
 2. 保存原始 boot/vendor_boot 镜像；

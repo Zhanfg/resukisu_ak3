@@ -8,6 +8,8 @@ trap 'rm -rf "$tmp_root"' EXIT
 kernel="$tmp_root/kernel"
 resukisu="$tmp_root/resukisu"
 defconfig_rel="arch/arm64/configs/sdm845_defconfig"
+expected_make_line="obj-\$(CONFIG_KSU) += kernelsu/"
+expected_kconfig_line='source "drivers/kernelsu/Kconfig"'
 
 mkdir -p \
   "$kernel/drivers" \
@@ -62,15 +64,15 @@ bash "$repo_root/scripts/integrate_resukisu.sh" "$kernel" "$resukisu" "$defconfi
 
 [[ -L "$kernel/drivers/kernelsu" ]]
 [[ "$(realpath "$kernel/drivers/kernelsu")" == "$(realpath "$resukisu/kernel")" ]]
-grep -Fqx 'obj-$(CONFIG_KSU) += kernelsu/' "$kernel/drivers/Makefile"
-grep -Fqx 'source "drivers/kernelsu/Kconfig"' "$kernel/drivers/Kconfig"
+grep -Fqx "$expected_make_line" "$kernel/drivers/Makefile"
+grep -Fqx "$expected_kconfig_line" "$kernel/drivers/Kconfig"
 grep -Fqx 'CONFIG_KSU=y' "$kernel/$defconfig_rel"
 grep -Fqx 'CONFIG_KSU_MANUAL_HOOK=y' "$kernel/$defconfig_rel"
 
 # A second run must be idempotent.
 bash "$repo_root/scripts/integrate_resukisu.sh" "$kernel" "$resukisu" "$defconfig_rel"
-[[ "$(grep -Fc 'obj-$(CONFIG_KSU) += kernelsu/' "$kernel/drivers/Makefile")" -eq 1 ]]
-[[ "$(grep -Fc 'source "drivers/kernelsu/Kconfig"' "$kernel/drivers/Kconfig")" -eq 1 ]]
+[[ "$(grep -Fc "$expected_make_line" "$kernel/drivers/Makefile")" -eq 1 ]]
+[[ "$(grep -Fc "$expected_kconfig_line" "$kernel/drivers/Kconfig")" -eq 1 ]]
 [[ "$(grep -Fc 'CONFIG_KSU=y' "$kernel/$defconfig_rel")" -eq 1 ]]
 [[ "$(grep -Fc 'CONFIG_KSU_MANUAL_HOOK=y' "$kernel/$defconfig_rel")" -eq 1 ]]
 

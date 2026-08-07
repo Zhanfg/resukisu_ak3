@@ -44,28 +44,36 @@ grep -Eq '^PATCHLEVEL[[:space:]]*=[[:space:]]*9([[:space:]]|$)' "$kernel_root/Ma
 # a documented but unimplemented hook as a valid integration.
 has_hook_call() {
   local source_file="$1"
-  local marker="$2"
+  local call_pattern="$2"
 
-  awk -v marker="$marker" '
+  awk -v call_pattern="$call_pattern" '
     /^[[:space:]]*(extern([[:space:]]|$)|\/\/|\/\*|\*|#)/ { next }
-    $0 ~ marker "[[:space:]]*\\(" { found = 1 }
+    $0 ~ call_pattern "[[:space:]]*\\(" { found = 1 }
     END { exit(found ? 0 : 1) }
   ' "$source_file"
 }
 
-declare -A required_hooks=(
+declare -A required_hook_patterns=(
   ["fs/stat.c"]="ksu_handle_stat"
-  ["fs/exec.c"]="ksu_handle_execve"
+  ["fs/exec.c"]="ksu_handle_execve(at)?"
   ["fs/open.c"]="ksu_handle_faccessat"
   ["kernel/reboot.c"]="ksu_handle_sys_reboot"
 )
 
-for relative_path in "${!required_hooks[@]}"; do
-  marker="${required_hooks[$relative_path]}"
+declare -A required_hook_names=(
+  ["fs/stat.c"]="ksu_handle_stat"
+  ["fs/exec.c"]="ksu_handle_execve or ksu_handle_execveat"
+  ["fs/open.c"]="ksu_handle_faccessat"
+  ["kernel/reboot.c"]="ksu_handle_sys_reboot"
+)
+
+for relative_path in "${!required_hook_patterns[@]}"; do
+  call_pattern="${required_hook_patterns[$relative_path]}"
+  hook_name="${required_hook_names[$relative_path]}"
   source_file="$kernel_root/$relative_path"
   [[ -f "$source_file" ]] || fail "required source file is missing: $relative_path"
-  has_hook_call "$source_file" "$marker" || \
-    fail "manual ReSukiSU hook call '$marker(...)' is missing from $relative_path"
+  has_hook_call "$source_file" "$call_pattern" || \
+    fail "manual ReSukiSU hook call '$hook_name(...)' is missing from $relative_path"
 done
 
 echo "[OK] Linux 4.9 source tree, arm64 defconfig and minimum manual-hook calls validated"

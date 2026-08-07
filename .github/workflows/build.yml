@@ -56,7 +56,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
 
       - name: Install ShellCheck
         run: |
@@ -86,7 +88,9 @@ jobs:
 
     steps:
       - name: Checkout builder
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
 
       - name: Validate workflow inputs
         shell: bash
@@ -127,6 +131,7 @@ jobs:
             local destination="$1"
             local repository="$2"
             local commit="$3"
+            local actual
 
             git init "$destination"
             git -C "$destination" remote add origin "https://github.com/${repository}.git"

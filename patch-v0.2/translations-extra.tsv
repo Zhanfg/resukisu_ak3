@@ -1,0 +1,286 @@
+AgentSkill	智能代理技能
+Android Version: %3$s	Android 版本：%3$s
+App Version: %2$s	应用版本：%2$s
+Archive session with %s?	归档与 %s 的会话？
+Archive session?	归档会话？
+At risk	存在风险
+Auto-merge	自动合并
+Automatic	自动
+Badge count	角标数量
+Behind	落后
+Behind %1$s	落后 %1$s
+Behind %1$s, update required	落后 %1$s，需要更新
+Behind base branch	落后于基础分支
+Behind base branch, update required	落后于基础分支，需要更新
+Billing	账单
+Binary file changed	二进制文件已更改
+Block quote	引用块
+Bold	粗体
+Branch behind	分支落后
+Breached	已违反
+Breached by %1$s	已超出 %1$s
+Bullet list	项目符号列表
+Can’t do that right now	暂时无法执行此操作
+Changed %d file	更改了 %d 个文件
+Changed %d files	更改了 %d 个文件
+Changes requested	已请求更改
+Chat with Linear about this pull request	与 Linear 讨论此拉取请求
+Checks	检查
+Checks failed	检查失败
+Choose a Workspace	选择工作区
+Choose labels…	选择标签…
+Clear filters	清除筛选
+Clear query	清除查询
+Clear search	清除搜索
+Close pull request	关闭拉取请求
+Close sheet	关闭面板
+Code access needed	需要代码访问权限
+Code block	代码块
+Code reviews not available	代码审查不可用
+Collapse all	全部收起
+Complete	完成
+Completed cycle	已完成周期
+Completed issues	已完成任务
+Conflicts	冲突
+Connect GitHub to view this file	连接 GitHub 后查看此文件
+Connect your GitHub account, or ask a workspace admin to enable code access.	连接 GitHub 账户，或让工作区管理员启用代码访问。
+Continuous	持续
+Contributes to	贡献给
+Convert to draft	转为草稿
+Copy branch name	复制分支名称
+Copy git branch name	复制 Git 分支名称
+Copy GitHub URL	复制 GitHub URL
+Copy GitLab URL	复制 GitLab URL
+Copy pull request number	复制拉取请求编号
+Copy review URL	复制审查 URL
+Copy text	复制文本
+Copy version	复制版本
+Could not access workspace. Please log in or contact a workspace admin for access.	无法访问工作区。请重新登录或联系工作区管理员。
+Couldn’t finish. Try again.	未能完成，请重试。
+Create issue from selection	根据所选内容创建任务
+Create merge commit	创建合并提交
+Create new label "%1$s"	创建新标签“%1$s”
+Create new sub-issue	创建新子任务
+Current cycles	当前周期
+Current mode: Repeat all. Toggle repeat mode.	当前模式：全部循环。点击切换循环模式。
+Current mode: Repeat none. Toggle repeat mode.	当前模式：不循环。点击切换循环模式。
+Current mode: Repeat one. Toggle repeat mode.	当前模式：单曲循环。点击切换循环模式。
+Current tab	当前标签
+Current user	当前用户
+Customer request	客户请求
+Customer requests	客户请求
+Customer revenue	客户收入
+Customer size	客户规模
+Customer tier	客户等级
+Customize	自定义
+Custom…	自定义…
+Cycle cannot be changed on a shared issue	共享任务无法更改周期
+Daily	每天
+Dark grey	深灰色
+Day	天
+Delete all	全部删除
+Delete all completed	删除所有已完成
+Delete all for completed issues and reviews	删除所有已完成任务和审查
+Delete all read	删除所有已读
+Delete notifications	删除通知
+Delete request	删除请求
+Disable auto merge	关闭自动合并
+Disabled	已停用
+Dismiss dialog	关闭对话框
+Display	显示
+Display options	显示选项
+Do you want to archive the session?	是否要归档此会话？
+Document changes	文档更改
+Document deleted	文档已删除
+Document icon	文档图标
+Document restored	文档已恢复
+Don't have access?	没有访问权限？
+Download	下载
+Edit dependencies	编辑依赖
+Edit start date	编辑开始日期
+Edit target date	编辑目标日期
+Enable	启用
+Enable auto merge	启用自动合并
+Enabled	已启用
+End of this week	本周末
+End time must be after start time	结束时间必须晚于开始时间
+exclude	排除
+exclude if all	全部满足时排除
+exclude if any of	满足任一时排除
+Expand all	全部展开
+Failed to submit feedback	提交反馈失败
+File copied	文件已复制
+Filter issues	筛选任务
+Fix conflicts	解决冲突
+Fix conflicts on GitHub	在 GitHub 上解决冲突
+Fix conflicts on GitLab	在 GitLab 上解决冲突
+Fix conflicts with Linear agent	使用 Linear 智能代理解决冲突
+For me	与我相关
+General	通用
+Grouping	分组
+Half-year	半年
+Has sub-menu	有子菜单
+Heading 1	标题 1
+Heading 2	标题 2
+Heading 3	标题 3
+Heading 4	标题 4
+Hidden	已隐藏
+Hide additional settings	隐藏更多设置
+High Risk	高风险
+How can we improve the Linear app?	我们怎样才能改进 Linear 应用？
+Important customer request	重要客户请求
+In a month	一个月后
+In an hour	一小时后
+In one week	一周后
+include	包含
+include all of	全部包含
+include any of	包含任一
+Incorrect input data	输入数据不正确
+Indent	增加缩进
+Initiative row properties	计划行属性
+Inline code	行内代码
+Internal Testing	内部测试
+Invalid auth. Please log in again.	身份验证无效，请重新登录。
+Invalid input	输入无效
+Invalid URL	URL 无效
+is	是
+is any of	属于任一
+is none of	不属于任何
+is not	不是
+Issue created	任务已创建
+Issue created, but the selected text could not be linked	任务已创建，但无法关联所选文本
+Issue moved to %1$s	任务已移动到 %1$s
+Issue research	任务研究
+Issue row properties	任务行属性
+Issue shared outside the %s team	任务已共享到 %s 团队之外
+Issue template	任务模板
+Issue title	任务标题
+Italic	斜体
+Last week	上周
+Lead team	主负责团队
+Leave feedback	提交反馈
+Linear for Android %1$s	Linear Android 版 %1$s
+Link existing issue	关联现有任务
+Link URL	链接 URL
+Log out	退出登录
+Log out of all accounts	退出所有账户
+Loop run	循环运行
+Loop run failed to load	循环运行加载失败
+Low Risk	低风险
+Manual	手动
+Mark all as read	全部标为已读
+Mark as blocked by…	标记为被…阻塞
+Mark as blocking…	标记为阻塞…
+Mark as ready	标记为就绪
+Mark as ready for review	标记为可审查
+Matches	匹配
+Maximum title length	标题达到最大长度
+MCP servers	MCP 服务器
+Merge	合并
+Merged	已合并
+Merging pull request…	正在合并拉取请求…
+Message agent	向智能代理发送消息
+Milestone cannot be changed on a shared issue	共享任务无法更改里程碑
+Missing required checks	缺少必需检查
+Moderate Risk	中等风险
+Month	月
+More actions	更多操作
+More properties	更多属性
+More requests · %1$d	更多请求 · %1$d
+New Chat	新对话
+Open link in browser	在浏览器中打开链接
+Open source licenses	开源许可证
+Privacy	隐私
+Project creation	创建项目
+Rate Linear	为 Linear 评分
+Read	已读
+Ready for merge	可以合并
+Ready to merge	可以合并
+Rebase & merge	变基并合并
+Rebase and merge	变基并合并
+Receive push notifications	接收推送通知
+Recent conversations	最近对话
+Recently viewed	最近查看
+Regular text	正文
+Related to	关联到
+Relations	关联关系
+Remove SLA	移除 SLA
+Remove start date	移除开始日期
+Remove target date	移除目标日期
+Reopen pull request	重新打开拉取请求
+Requesting input	正在请求意见
+Required	必需
+Resolution	解决结果
+Resolve thread with comment	回复并解决讨论
+Resolved comments	已解决的评论
+Restore document	恢复文档
+Row properties	行属性
+Search all filters	搜索所有筛选项
+Search checks…	搜索检查…
+Select search type	选择搜索类型
+Selected	已选择
+Send stop request	发送停止请求
+Set lead…	设置主负责团队…
+Set owner…	设置负责人…
+Set parent initiative…	设置上级计划…
+Setup required	需要设置
+Show additional settings	显示更多设置
+Show important first	重要通知优先
+Show unread badge	显示未读角标
+Sign in to use this app	登录后使用此应用
+Situation report	情况报告
+Skills	技能
+SLA breached	SLA 已超时
+Something’s wrong. Try later.	出现问题，请稍后重试。
+Source branch: %1$s, target branch: %2$s	源分支：%1$s，目标分支：%2$s
+Squash & merge	压缩并合并
+Squash and merge	压缩并合并
+Start time must be before end time	开始时间必须早于结束时间
+Status Page	状态页
+Stop and archive	停止并归档
+Stop requested	已请求停止
+Strikethrough	删除线
+Sub-initiative of	所属子计划
+Sub-issue of	所属子任务
+Sub-team of	所属子团队
+Sub-teams	子团队
+Supplementary	补充
+Support	支持
+Switch workspace	切换工作区
+Tab	标签
+Tab selection menu	标签选择菜单
+Team cannot be changed on a shared issue	共享任务无法更改团队
+Team retired — document is read-only	团队已停用——文档为只读
+Team retired — issue is read-only	团队已停用——任务为只读
+Team retired — project is read-only	团队已停用——项目为只读
+Text style	文本样式
+The %1$s team is not part of the %2$s project.	%1$s 团队不属于 %2$s 项目。
+The agent did not make any changes yet.	智能代理尚未进行任何更改。
+The project must have at least one team.	项目至少需要一个团队。
+This agent is still working. Are you sure you'd like to stop it and archive the session?	智能代理仍在工作，确定要停止并归档此会话吗？
+This version is no longer supported. Please update to the latest version to continue using the app.	当前版本已不再支持，请更新到最新版后继续使用。
+This will delete all notifications about issues that were marked as done or cancelled.	这将删除所有已完成或已取消任务的通知。
+This will delete all notifications in your inbox.	这将删除收件箱中的所有通知。
+This will delete all read notifications in your inbox.	这将删除收件箱中的所有已读通知。
+This workspace's plan does not include code reviews.	当前工作区套餐不包含代码审查。
+Thought for a few seconds	思考了几秒
+to mention any issue, project, or document	提及任意任务、项目或文档
+Underline	下划线
+Unindent	减少缩进
+Unknown (%1$s)	未知（%1$s）
+Unknown customer	未知客户
+Unknown health	未知健康度
+Unpin from tab bar	从标签栏取消固定
+Unpinned from tab bar	已从标签栏取消固定
+Up to date with %1$s	已与 %1$s 保持最新
+Update with merge commit	通过合并提交更新
+Update with rebase	通过变基更新
+Updates from initiatives and projects in your workspace will show here	工作区中计划和项目的更新会显示在这里
+Updates from initiatives and projects that you're a part of or subscribed to will show here	你参与或订阅的计划和项目更新会显示在这里
+Updates will show here	更新会显示在这里
+Upgrade Required	需要升级
+User ID: %1$s	用户 ID：%1$s
+Welcome to	欢迎使用
+Which workspace would you like to log in to? You can change workspaces at any point from Settings, or by long pressing on the Home tab.	请选择要登录的工作区。你可以随时在“设置”中切换，也可以长按“主页”标签切换。
+Worked	已处理
+Worked for a while	已处理一段时间

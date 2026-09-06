@@ -40,10 +40,15 @@ jobs:
           sed -i 's/versionName = "0.2.0-linear-1.99"/versionName = "0.3.0-linear-1.99"/' src/app/build.gradle.kts
           cat patch-v0.3/translations-extra.* >> src/app/src/main/resources/translations.tsv
           sed -i '1c# Linear 1.99.0 Simplified Chinese exact UI mappings' src/app/src/main/resources/translations.tsv
+      - name: Apply v0.4 long-text stability guard
+        run: |
+          patch -d src -p1 < patch-v0.4/stability.patch
+          sed -i 's/versionCode = 3/versionCode = 4/' src/app/build.gradle.kts
+          sed -i 's/versionName = "0.3.0-linear-1.99"/versionName = "0.4.0-linear-1.99"/' src/app/build.gradle.kts
       - name: Build APK
         working-directory: src
         run: gradle :app:assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: LinearZh-LSPosed-0.3.0
+          name: LinearZh-LSPosed-0.4.0
           path: src/app/build/outputs/apk/debug/app-debug.apk

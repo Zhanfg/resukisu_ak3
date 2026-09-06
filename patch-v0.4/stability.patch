@@ -1,0 +1,311 @@
+--- a/app/src/main/java/io/github/zhanfg/linearzh/ModuleMain.java
++++ b/app/src/main/java/io/github/zhanfg/linearzh/ModuleMain.java
+@@ -7,14 +7,12 @@
+ import android.content.Context;
+ import android.content.res.Resources;
+ import android.os.Bundle;
+-import android.text.BoringLayout;
+-import android.text.StaticLayout;
+ import android.util.Log;
+ import android.widget.TextView;
+ 
+ import java.lang.reflect.Constructor;
++import java.lang.reflect.Field;
+ import java.lang.reflect.Method;
+-import java.lang.reflect.Modifier;
+ import java.util.List;
+ 
+ import io.github.libxposed.api.XposedModule;
+@@ -24,7 +22,6 @@
+     private static final String TARGET = "app.linear";
+     private static final String COMPOSE_SIMPLE = "androidx.compose.foundation.text.modifiers.TextStringSimpleElement";
+     private static final String COMPOSE_ANNOTATED = "androidx.compose.foundation.text.modifiers.TextAnnotatedStringElement";
+-    private static final String COMPOSE_SELECTABLE = "androidx.compose.foundation.text.modifiers.SelectableTextAnnotatedStringElement";
+ 
+     // Linear 1.99.0 obfuscated composable created only for app.linear.ui.settings.LicensesScreen.
+     // It gives us a scoped guard so dependency names/licenses are never passed through the UI dictionary.
+@@ -37,8 +34,6 @@
+         count += hookResourceText();
+         count += hookContextText();
+         count += hookTextView();
+-        count += hookStaticLayout();
+-        count += hookBoringLayout();
+         count += hookComposeText(param.getClassLoader());
+         count += hookLicenseRenderer(param.getClassLoader());
+         count += hookNotifications();
+@@ -54,8 +49,13 @@
+             try {
+                 hook(method).intercept(chain -> {
+                     Object result = chain.proceed();
+-                    if (result instanceof CharSequence text) return Translator.translateCharSequence(text);
+-                    return result;
++                    if (!(result instanceof CharSequence text)) return result;
++                    try {
++                        return Translator.translateCharSequence(text);
++                    } catch (Throwable error) {
++                        log(Log.WARN, TAG, "Resource translation skipped after runtime error", error);
++                        return result;
++                    }
+                 });
+                 count++;
+             } catch (Throwable error) {
+@@ -73,8 +73,13 @@
+             try {
+                 hook(method).intercept(chain -> {
+                     Object result = chain.proceed();
+-                    if (result instanceof CharSequence text) return Translator.translateCharSequence(text);
+-                    return result;
++                    if (!(result instanceof CharSequence text)) return result;
++                    try {
++                        return Translator.translateCharSequence(text);
++                    } catch (Throwable error) {
++                        log(Log.WARN, TAG, "Context translation skipped after runtime error", error);
++                        return result;
++                    }
+                 });
+                 count++;
+             } catch (Throwable error) {
+@@ -94,65 +99,17 @@
+                 hook(method).intercept(chain -> {
+                     Object[] args = chain.getArgs().toArray();
+                     if (args.length > 0 && args[0] instanceof CharSequence text) {
+-                        args[0] = Translator.translateCharSequence(text);
+-                    }
+-                    return chain.proceed(args);
+-                });
+-                count++;
+-            } catch (Throwable error) {
+-                log(Log.WARN, TAG, "TextView hook failed: " + method, error);
+-            }
+-        }
+-        return count;
+-    }
+-
+-    private int hookStaticLayout() {
+-        int count = 0;
+-        try {
+-            for (Method method : StaticLayout.Builder.class.getDeclaredMethods()) {
+-                if (!method.getName().equals("obtain") || !Modifier.isStatic(method.getModifiers())) continue;
+-                Class<?>[] types = method.getParameterTypes();
+-                if (types.length == 0 || !CharSequence.class.isAssignableFrom(types[0])) continue;
+-                hook(method).intercept(chain -> {
+-                    Object[] args = chain.getArgs().toArray();
+-                    if (args.length > 0 && args[0] instanceof CharSequence text) {
+-                        String before = text.toString();
+-                        CharSequence after = Translator.translateCharSequence(text);
+-                        if (!before.contentEquals(after)) {
+-                            args[0] = after;
+-                            if (args.length > 2 && args[1] instanceof Integer && args[2] instanceof Integer) {
+-                                args[1] = 0;
+-                                args[2] = after.length();
+-                            }
++                        try {
++                            args[0] = Translator.translateCharSequence(text);
++                        } catch (Throwable error) {
++                            log(Log.WARN, TAG, "TextView translation skipped after runtime error", error);
+                         }
+                     }
+                     return chain.proceed(args);
+                 });
+                 count++;
+-            }
+-        } catch (Throwable error) {
+-            log(Log.WARN, TAG, "StaticLayout hook setup failed", error);
+-        }
+-        return count;
+-    }
+-
+-    private int hookBoringLayout() {
+-        int count = 0;
+-        for (Method method : BoringLayout.class.getDeclaredMethods()) {
+-            if (!method.getName().equals("make") || !Modifier.isStatic(method.getModifiers())) continue;
+-            Class<?>[] types = method.getParameterTypes();
+-            if (types.length == 0 || !CharSequence.class.isAssignableFrom(types[0])) continue;
+-            try {
+-                hook(method).intercept(chain -> {
+-                    Object[] args = chain.getArgs().toArray();
+-                    if (args.length > 0 && args[0] instanceof CharSequence text) {
+-                        args[0] = Translator.translateCharSequence(text);
+-                    }
+-                    return chain.proceed(args);
+-                });
+-                count++;
+             } catch (Throwable error) {
+-                log(Log.WARN, TAG, "BoringLayout hook failed: " + method, error);
++                log(Log.WARN, TAG, "TextView hook failed: " + method, error);
+             }
+         }
+         return count;
+@@ -162,7 +119,8 @@
+         int count = 0;
+         count += hookComposeSimpleString(classLoader);
+         count += hookComposeAnnotated(classLoader, COMPOSE_ANNOTATED);
+-        count += hookComposeAnnotated(classLoader, COMPOSE_SELECTABLE);
++        // Selectable annotated text is used by long/rich document bodies. Rebuilding it
++        // can invalidate selection/link ranges, so v0.4 deliberately leaves it untouched.
+         return count;
+     }
+ 
+@@ -176,8 +134,12 @@
+                 constructor.setAccessible(true);
+                 hook(constructor).intercept(chain -> {
+                     Object[] args = chain.getArgs().toArray();
+-                    if (args.length > 0 && args[0] instanceof String text) {
+-                        args[0] = Translator.translate(text);
++                    if (args.length > 0 && args[0] instanceof String text && Translator.isSafeUiLength(text.length())) {
++                        try {
++                            args[0] = Translator.translate(text);
++                        } catch (Throwable error) {
++                            log(Log.WARN, TAG, "Compose simple translation skipped after runtime error", error);
++                        }
+                     }
+                     return chain.proceed(args);
+                 });
+@@ -201,17 +163,20 @@
+                 if (stringConstructor == null) continue;
+                 elementConstructor.setAccessible(true);
+                 stringConstructor.setAccessible(true);
++                Field[] listFields = findListFields(annotatedType);
+                 hook(elementConstructor).intercept(chain -> {
+                     Object[] args = chain.getArgs().toArray();
+                     if (args.length == 0 || args[0] == null) return chain.proceed(args);
+-                    String before = args[0].toString();
+-                    String after = Translator.translate(before);
+-                    if (!before.equals(after)) {
+-                        try {
+-                            args[0] = newAnnotatedString(stringConstructor, after);
+-                        } catch (Throwable error) {
+-                            log(Log.WARN, TAG, "Could not rebuild Compose annotated text", error);
+-                        }
++                    Object annotated = args[0];
++                    if (!isSafePlainAnnotated(annotated, listFields)) {
++                        return chain.proceed(args);
++                    }
++                    try {
++                        String before = annotated.toString();
++                        String after = Translator.translate(before);
++                        if (!before.equals(after)) args[0] = newAnnotatedString(stringConstructor, after);
++                    } catch (Throwable error) {
++                        log(Log.WARN, TAG, "Compose annotated translation skipped after runtime error", error);
+                     }
+                     return chain.proceed(args);
+                 });
+@@ -262,7 +227,10 @@
+             Method build = Notification.Builder.class.getDeclaredMethod("build");
+             hook(build).intercept(chain -> {
+                 Object result = chain.proceed();
+-                if (result instanceof Notification notification) translateNotification(notification);
++                if (result instanceof Notification notification) {
++                    try { translateNotification(notification); }
++                    catch (Throwable error) { log(Log.WARN, TAG, "Notification translation skipped", error); }
++                }
+                 return result;
+             });
+             return 1;
+@@ -284,7 +252,10 @@
+                 hook(method).intercept(chain -> {
+                     Object[] args = chain.getArgs().toArray();
+                     for (Object arg : args) {
+-                        if (arg instanceof Notification notification) translateNotification(notification);
++                        if (arg instanceof Notification notification) {
++                            try { translateNotification(notification); }
++                            catch (Throwable error) { log(Log.WARN, TAG, "Posted notification translation skipped", error); }
++                        }
+                     }
+                     return chain.proceed(args);
+                 });
+@@ -419,6 +390,37 @@
+         if (translated != value) extras.putCharSequence(key, translated);
+     }
+ 
++    private static Field[] findListFields(Class<?> type) {
++        java.util.ArrayList<Field> fields = new java.util.ArrayList<>();
++        for (Field field : type.getDeclaredFields()) {
++            if (!List.class.isAssignableFrom(field.getType())) continue;
++            try { field.setAccessible(true); } catch (Throwable ignored) { continue; }
++            fields.add(field);
++        }
++        return fields.toArray(new Field[0]);
++    }
++
++    private static boolean isSafePlainAnnotated(Object annotated, Field[] listFields) {
++        int length;
++        if (annotated instanceof CharSequence chars) length = chars.length();
++        else {
++            String text = annotated.toString();
++            length = text.length();
++        }
++        if (!Translator.isSafeUiLength(length)) return false;
++        // If the obfuscated AnnotatedString shape changed, fail closed instead of stripping rich metadata.
++        if (listFields.length == 0) return false;
++        for (Field field : listFields) {
++            try {
++                Object value = field.get(annotated);
++                if (value instanceof List<?> list && !list.isEmpty()) return false;
++            } catch (Throwable ignored) {
++                return false;
++            }
++        }
++        return true;
++    }
++
+     private static Constructor<?> findStringConstructor(Class<?> type) {
+         for (Constructor<?> constructor : type.getDeclaredConstructors()) {
+             Class<?>[] params = constructor.getParameterTypes();
+--- a/app/src/main/java/io/github/zhanfg/linearzh/Translator.java
++++ b/app/src/main/java/io/github/zhanfg/linearzh/Translator.java
+@@ -1,5 +1,7 @@
+ package io.github.zhanfg.linearzh;
+ 
++import android.text.Spanned;
++
+ import java.io.BufferedReader;
+ import java.io.InputStream;
+ import java.io.InputStreamReader;
+@@ -13,6 +15,8 @@
+ import java.util.regex.Pattern;
+ 
+ final class Translator {
++    private static final int MAX_UI_TEXT_LENGTH = 256;
++    private static final int MAX_NOTIFICATION_TEXT_LENGTH = 1024;
+     private static final Loaded LOADED = load();
+     private static final Map<String, String> EXACT = LOADED.exact;
+     private static final Map<String, String> NORMALIZED = LOADED.normalized;
+@@ -58,8 +62,13 @@
+         else LICENSE_RENDER_DEPTH.set(value);
+     }
+ 
++    static boolean isSafeUiLength(int length) {
++        return length >= 0 && length <= MAX_UI_TEXT_LENGTH;
++    }
++
+     static String translate(String source) {
+         if (source == null || source.isEmpty()) return source;
++        if (!isSafeUiLength(source.length())) return source;
+ 
+         // The title is UI; the actual license/dependency content must stay original.
+         if (LICENSE_RENDER_DEPTH.get() > 0 && !"Open source licenses".equals(source)) return source;
+@@ -81,6 +90,7 @@
+ 
+     static String translateNotification(String source) {
+         if (source == null || source.isEmpty()) return source;
++        if (source.length() > MAX_NOTIFICATION_TEXT_LENGTH) return source;
+         if (looksLegalOrDependencyText(source)) return source;
+ 
+         String exact = translate(source);
+@@ -95,6 +105,7 @@
+ 
+     static CharSequence translateCharSequence(CharSequence source) {
+         if (source == null || source.length() == 0) return source;
++        if (!isSafeUiLength(source.length()) || source instanceof Spanned) return source;
+         String original = source.toString();
+         String translated = translate(original);
+         return original.equals(translated) ? source : translated;
+@@ -102,6 +113,7 @@
+ 
+     static CharSequence translateNotificationCharSequence(CharSequence source) {
+         if (source == null || source.length() == 0) return source;
++        if (source.length() > MAX_NOTIFICATION_TEXT_LENGTH || source instanceof Spanned) return source;
+         String original = source.toString();
+         String translated = translateNotification(original);
+         return original.equals(translated) ? source : translated;

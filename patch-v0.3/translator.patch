@@ -1,0 +1,124 @@
+--- a/app/src/main/java/io/github/zhanfg/linearzh/Translator.java
++++ b/app/src/main/java/io/github/zhanfg/linearzh/Translator.java
+@@ -17,12 +17,54 @@
+     private static final Map<String, String> EXACT = LOADED.exact;
+     private static final Map<String, String> NORMALIZED = LOADED.normalized;
+     private static final List<TemplateRule> TEMPLATES = LOADED.templates;
++    private static final ThreadLocal<Integer> LICENSE_RENDER_DEPTH = ThreadLocal.withInitial(() -> 0);
++
++    // Keep legal text and dependency metadata intact. The menu label itself is translated.
++    private static final Pattern LEGAL_TEXT = Pattern.compile(
++            "(?is)(copyright|permission is hereby granted|licensed under|apache license|mit license|bsd license|gnu (?:general|lesser)|mozilla public license|" +
++            "the software is provided|all rights reserved|redistribution and use|spdx-license-identifier|without warranties|limitations under the license|" +
++            "https?://|scm:git:|[a-z0-9_.-]+:[a-z0-9_.-]+:[a-z0-9_.-]+)"
++    );
++
++    private static final List<NotificationRule> NOTIFICATION_RULES = List.of(
++            new NotificationRule("^(.+?) assigned you to (.+)$", "$1 将 $2 分配给了你"),
++            new NotificationRule("^(.+?) assigned (.+?) to you$", "$1 将 $2 分配给了你"),
++            new NotificationRule("^(.+?) mentioned you in (.+)$", "$1 在 $2 中提到了你"),
++            new NotificationRule("^(.+?) mentioned you on (.+)$", "$1 在 $2 中提到了你"),
++            new NotificationRule("^(.+?) commented on (.+)$", "$1 评论了 $2"),
++            new NotificationRule("^(.+?) replied to your comment(?: on (.+))?$", "$1 回复了你的评论$2"),
++            new NotificationRule("^(.+?) replied to (.+)$", "$1 回复了 $2"),
++            new NotificationRule("^(.+?) reacted to your comment(?: on (.+))?$", "$1 回应了你的评论$2"),
++            new NotificationRule("^(.+?) reacted to (.+)$", "$1 回应了 $2"),
++            new NotificationRule("^(.+?) changed the status of (.+?) to (.+)$", "$1 将 $2 的状态更改为 $3"),
++            new NotificationRule("^(.+?) requested your review on (.+)$", "$1 请求你审查 $2"),
++            new NotificationRule("^(.+?) requested your review(?: for (.+))?$", "$1 请求你审查$2"),
++            new NotificationRule("^(.+?) added you as a subscriber to (.+)$", "$1 将你添加为 $2 的订阅者"),
++            new NotificationRule("^(.+?) removed you as a subscriber from (.+)$", "$1 将你从 $2 的订阅者中移除"),
++            new NotificationRule("^Reminder: (.+)$", "提醒：$1"),
++            new NotificationRule("^(.+?) is due today$", "$1 今天到期"),
++            new NotificationRule("^(.+?) is overdue$", "$1 已逾期")
++    );
+ 
+     private Translator() {}
+ 
++    static void enterLicenseRender() {
++        LICENSE_RENDER_DEPTH.set(LICENSE_RENDER_DEPTH.get() + 1);
++    }
++
++    static void exitLicenseRender() {
++        int value = LICENSE_RENDER_DEPTH.get() - 1;
++        if (value <= 0) LICENSE_RENDER_DEPTH.remove();
++        else LICENSE_RENDER_DEPTH.set(value);
++    }
++
+     static String translate(String source) {
+         if (source == null || source.isEmpty()) return source;
+ 
++        // The title is UI; the actual license/dependency content must stay original.
++        if (LICENSE_RENDER_DEPTH.get() > 0 && !"Open source licenses".equals(source)) return source;
++        if (!"Open source licenses".equals(source) && looksLegalOrDependencyText(source)) return source;
++
+         String direct = EXACT.get(source);
+         if (direct != null) return direct;
+ 
+@@ -37,6 +79,20 @@
+         return source;
+     }
+ 
++    static String translateNotification(String source) {
++        if (source == null || source.isEmpty()) return source;
++        if (looksLegalOrDependencyText(source)) return source;
++
++        String exact = translate(source);
++        if (!source.equals(exact)) return exact;
++
++        for (NotificationRule rule : NOTIFICATION_RULES) {
++            String translated = rule.tryTranslate(source);
++            if (translated != null) return translated;
++        }
++        return source;
++    }
++
+     static CharSequence translateCharSequence(CharSequence source) {
+         if (source == null || source.length() == 0) return source;
+         String original = source.toString();
+@@ -44,6 +100,18 @@
+         return original.equals(translated) ? source : translated;
+     }
+ 
++    static CharSequence translateNotificationCharSequence(CharSequence source) {
++        if (source == null || source.length() == 0) return source;
++        String original = source.toString();
++        String translated = translateNotification(original);
++        return original.equals(translated) ? source : translated;
++    }
++
++    private static boolean looksLegalOrDependencyText(String source) {
++        if (source.length() < 12) return false;
++        return LEGAL_TEXT.matcher(source).find();
++    }
++
+     private static String normalize(String source) {
+         String s = source.replace('\u00A0', ' ')
+                 .replace('\u2018', '\'')
+@@ -90,6 +158,26 @@
+ 
+     private record Loaded(Map<String, String> exact, Map<String, String> normalized, List<TemplateRule> templates) {}
+ 
++    private static final class NotificationRule {
++        private final Pattern pattern;
++        private final String replacement;
++
++        NotificationRule(String regex, String replacement) {
++            this.pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
++            this.replacement = replacement;
++        }
++
++        String tryTranslate(String input) {
++            Matcher matcher = pattern.matcher(input);
++            if (!matcher.matches()) return null;
++            try {
++                return matcher.replaceFirst(replacement);
++            } catch (Throwable ignored) {
++                return null;
++            }
++        }
++    }
++
+     private static final class TemplateRule {
+         private static final Pattern PLACEHOLDER = Pattern.compile("%(?:(\\d+)\\$)?([sd])");
+         private final Pattern sourcePattern;

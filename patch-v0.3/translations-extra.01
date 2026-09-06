@@ -1,0 +1,220 @@
+Queued	已加入队列
+Queued for merge	已加入合并队列
+Quote	引用
+Redo	重做
+Reject	拒绝
+Release date	发布日期
+Release notes	发布说明
+Remove attachment	移除附件
+Remove filter	移除筛选
+Remove folder	移除文件夹
+Remove from queue	从队列移除
+Removed from favorites	已从收藏中移除
+Rename folder	重命名文件夹
+Rename section	重命名分区
+Reorder	重新排序
+Replies	回复
+Reply via email	通过邮件回复
+Reviewed by %1$s	由 %1$s 审查
+Save image	保存图片
+Save video	保存视频
+Scroll to bottom	滚动到底部
+Section name	分区名称
+Send now	立即发送
+Show sub-team issues	显示子团队任务
+Show sub-team projects	显示子团队项目
+Snoozed until %1$s	已稍后处理至 %1$s
+Stop requested by %1$s	%1$s 请求停止
+Subscribed to issue	已订阅任务
+Subscription	订阅
+Submit query	提交查询
+Switch	切换
+This release note has no content	此发布说明暂无内容
+Unpinned	已取消固定
+Unsubscribed from issue	已取消订阅任务
+Untitled commit	未命名提交
+Untitled release notes	未命名发布说明
+View previous reply	查看上一条回复
+Web only	仅网页版
+Your draft will be lost if you switch workspaces	切换工作区后将丢失当前草稿
+Are you sure you want to delete this comment?	确定要删除这条评论吗？
+Are you sure you want to delete this customer request?	确定要删除此客户请求吗？
+Are you sure you want to delete this update?	确定要删除此更新吗？
+Are you sure you want to discard your changes?	确定要放弃更改吗？
+Are you sure you want to remove this link?	确定要移除此链接吗？
+Could not add link	无法添加链接
+Could not add reaction	无法添加表情回应
+Could not add subscriber	无法添加订阅者
+Could not create label	无法创建标签
+Could not delete customer request	无法删除客户请求
+Could not delete document	无法删除文档
+Could not edit link	无法编辑链接
+Could not load changes	无法加载更改
+Could not load file preview	无法加载文件预览
+Could not mark as important	无法标为重要
+Could not move issue	无法移动任务
+Could not open link in browser	无法在浏览器中打开链接
+Could not remove link	无法移除链接
+Could not remove reaction	无法移除表情回应
+Could not remove subscriber	无法移除订阅者
+Could not restore document	无法恢复文档
+Could not save icon	无法保存图标
+Could not save title	无法保存标题
+Could not send message	无法发送消息
+Could not set reminder	无法设置提醒
+Could not unmark as important	无法取消重要标记
+Failed to archive session	归档会话失败
+Failed to create document	创建文档失败
+Failed to delete initiative	删除计划失败
+Failed to delete issue	删除任务失败
+Failed to delete project	删除项目失败
+Failed to delete update	删除更新失败
+Failed to edit document	编辑文档失败
+Failed to load users	加载用户失败
+Failed to refresh sub-issues	刷新子任务失败
+Failed to save document edits	保存文档编辑失败
+Failed to save edits	保存编辑失败
+Failed to send	发送失败
+Failed to send message	发送消息失败
+Failed to send stop request	发送停止请求失败
+Failed to switch team	切换团队失败
+New comment	新评论
+New reply	新回复
+New mention	新提及
+New notification	新通知
+Issue assigned	任务已分配
+Status changed	状态已变更
+Deadline approaching	截止日期临近
+Reminder set for %1$s	已设置 %1$s 的提醒
+Added to merge queue	已加入合并队列
+Added to merge queue by %1$s	由 %1$s 加入合并队列
+Added: %1$s	已添加：%1$s
+Agent: %1$s	智能代理：%1$s
+Also posted to %1$s	同时发布到 %1$s
+Also update matching sub-initiatives?	同时更新匹配的子计划？
+Alternate	备选
+Approved by %1$s	由 %1$s 批准
+Are you sure you want to delete "%1$s"?	确定要删除“%1$s”吗？
+Assignee: %1$s	负责人：%1$s
+Assignee: %1$s, Agent: %2$s	负责人：%1$s，智能代理：%2$s
+A–Z	A–Z
+Blocking to	阻塞对象
+Blue	蓝色
+Change to next month	切换到下个月
+Change to previous month	切换到上个月
+Changed target branch to `%1$s`	目标分支已更改为 `%1$s`
+Changed title to <b>%1$s</b>	标题已更改为 <b>%1$s</b>
+Changed to	已更改为
+Changes requested by %1$s	%1$s 请求了更改
+Closed projects	已关闭项目
+Code snippet	代码片段
+Collapsed	已收起
+Comment on “%1$s”	评论“%1$s”
+Commentary	评论
+Committed %1$s	提交了 %1$s
+Connect	连接
+Connect your %s account to continue	连接你的 %s 账户以继续
+Connect your account to continue	连接你的账户以继续
+Could not add project dependency	无法添加项目依赖
+Could not add team to project	无法将团队添加到项目
+Could not disable auto merge	无法关闭自动合并
+Could not enable auto merge	无法启用自动合并
+Could not merge pull request	无法合并拉取请求
+Could not remove project dependency	无法移除项目依赖
+Could not remove review request	无法移除审查请求
+Could not remove team from project	无法从项目移除团队
+Could not request review	无法请求审查
+Could not submit the review	无法提交审查
+Couldn't join team	无法加入团队
+Couldn't leave team	无法退出团队
+Custom	自定义
+Date	日期
+Date does not match expected pattern: %1$s	日期格式不符合要求：%1$s
+Date not allowed: %1$s	不允许使用此日期：%1$s
+Date out of expected year range %1$s - %2$s	日期超出年份范围 %1$s–%2$s
+Default initiative icon	默认计划图标
+Default project icon	默认项目图标
+Delete “%1$s”?	删除“%1$s”？
+Description cannot exceed %1$d characters	描述不能超过 %1$d 个字符
+Diagram source	图表源代码
+Did not respond	未响应
+Diff	差异
+Diffs in Linear Mobile are coming soon	Linear 移动端即将支持差异查看
+Discard changes to this initiative?	放弃对此计划的更改？
+Discard this initiative?	放弃此计划？
+Dismissed %1$s's review	已忽略 %1$s 的审查
+Draft deleted	草稿已删除
+Edit failed to submit	编辑提交失败
+Email thread connected	已连接邮件线程
+Email thread with %1$s	与 %1$s 的邮件线程
+Empty file created	已创建空文件
+Empty file deleted	已删除空文件
+Error logging in	登录出错
+Exit comment editing	退出评论编辑
+Expand %1$d comments	展开 %1$d 条评论
+Expanded	已展开
+Failed by %1$s	由 %1$s 判定失败
+Failed to add link	添加链接失败
+Failed to add team to the selected project	向所选项目添加团队失败
+Failed to close pull request	关闭拉取请求失败
+Failed to convert to draft	转换为草稿失败
+Failed to hand the conflicts to the agent	将冲突交给智能代理失败
+Failed to link sub-issue	关联子任务失败
+Failed to mark ready for review	标记为可审查失败
+Failed to remove from merge queue	从合并队列移除失败
+Failed to remove queued message	移除排队消息失败
+Failed to reopen pull request	重新打开拉取请求失败
+Failed to save edits to "%1$s"	保存“%1$s”的编辑失败
+Failed to save edits to %1$d document	保存 %1$d 个文档的编辑失败
+Failed to save edits to %1$d documents	保存 %1$d 个文档的编辑失败
+Failed to save initiative description edits	保存计划描述失败
+Failed to save milestone description edits	保存里程碑描述失败
+Failed to save project description edits	保存项目描述失败
+Failed to send queued message	发送排队消息失败
+Failed to update branch	更新分支失败
+Failed to update project initiatives	更新项目计划失败
+Failed to update pull request	更新拉取请求失败
+Failed to update releases	更新发布失败
+Favorite "%1$s"	收藏“%1$s”
+File made executable	文件已设为可执行
+File renamed	文件已重命名
+Force-pushed	已强制推送
+Force-pushed %1$d time	已强制推送 %1$d 次
+Force-pushed %1$d times	已强制推送 %1$d 次
+Force-pushed from %1$s to %2$s	已从 %1$s 强制推送到 %2$s
+Generate new branch name	生成新的分支名称
+Gray	灰色
+Green	绿色
+Grey	灰色
+Helpful	有帮助
+In %1$s:	在 %1$s 中：
+Indigo	靛蓝色
+Initiative Icon	计划图标
+Initiative icon: %1$s	计划图标：%1$s
+Initiative update for %1$s…	更新计划 %1$s…
+Initiative update…	计划更新…
+Input/output error	输入/输出错误
+Install	安装
+Invited	已邀请
+Made non-executable	已取消可执行权限
+Manually removed from merge queue	已手动从合并队列移除
+Manually removed from merge queue by %1$s	由 %1$s 手动从合并队列移除
+Merged by %1$s	由 %1$s 合并
+Message %1$s	给 %1$s 发消息
+Mono	等宽
+Move from %1$s to parent initiative %2$s?	将 %1$s 移动到上级计划 %2$s？
+Move to %1$s team	移动到 %1$s 团队
+Name cannot exceed %1$d characters	名称不能超过 %1$d 个字符
+Navigate to year %1$s	跳转到 %1$s 年
+Navigate up	返回上一级
+Neutral	中性
+No changed files in this pull request	此拉取请求没有变更文件
+No initiative updates or comments yet	暂无计划更新或评论
+No project updates or comments yet	暂无项目更新或评论
+Normal	普通
+Not helpful	没有帮助
+Number only	仅编号
+Number with repo name	编号和仓库名
+Numbered list	编号列表
+OFF	关闭
+OK	确定

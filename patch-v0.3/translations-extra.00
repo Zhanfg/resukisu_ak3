@@ -1,0 +1,220 @@
+Notification schedule	通知时间安排
+Notification categories	通知类别
+Comments and replies	评论与回复
+Mentions	提及
+Reactions	表情回应
+Reminders and deadlines	提醒与截止日期
+Loops	循环任务
+Pulse	动态
+Pulse summaries	动态摘要
+Popular	热门
+Popular updates from initiatives and projects will show here	计划和项目中的热门更新会显示在这里
+Off track	偏离计划
+On track	进展正常
+Remind me	提醒我
+Edit issue	编辑任务
+Move to team…	移动到团队…
+Delete issue	删除任务
+Notification deleted	通知已删除
+Notification marked as read	通知已标为已读
+Notification marked as unread	通知已标为未读
+Notifications deleted	通知已删除
+Notifications marked as read	通知已标为已读
+Notifications marked as unread	通知已标为未读
+Notifications may be blocked by system settings	系统设置可能已阻止通知
+Priority & Other	优先通知与其他通知
+Priority inbox	优先收件箱
+Priority only	仅优先通知
+No priority notifications	暂无优先通知
+Attach	添加附件
+Author	作者
+Branch	分支
+Change initiatives…	更改计划…
+Change members…	更改成员…
+Change subscribers	更改订阅者
+Change teams…	更改团队…
+Changes	更改
+Commented	已评论
+Conversation	对话
+Delegate to…	委派给…
+Delegated	已委派
+Delete document	删除文档
+Delete initiative	删除计划
+Delete project	删除项目
+Delete section	删除分区
+Delete update	删除更新
+Delete this link?	删除此链接？
+Description…	描述…
+Discard	放弃
+Discard changes	放弃更改
+Discard changes?	放弃更改？
+Discard draft	放弃草稿
+Discard draft?	放弃草稿？
+Duplicate	创建副本
+Duplicates	重复项
+Edit description	编辑描述
+Edit initiative	编辑计划
+Edit initiatives	编辑计划
+Edit labels	编辑标签
+Edit link	编辑链接
+Edit members	编辑成员
+Edit project	编辑项目
+Edit update	编辑更新
+Editing comment	正在编辑评论
+Email	电子邮件
+Empty	空
+Error	错误
+Failed	失败
+File	文件
+Files	文件
+Flags	标记
+From	来自
+Get started	开始使用
+Go to	前往
+Grant permission	授予权限
+Home	主页
+ID	ID
+Image	图片
+In cooldown	冷却中
+In progress	进行中
+In review	审查中
+Inactive	未激活
+Include archived	包含已归档项
+Info	信息
+Initiative comment	计划评论
+Initiative created	计划已创建
+Initiative name	计划名称
+Initiative update comment	计划更新评论
+Issue comment	任务评论
+Joined %1$s	已加入 %1$s
+Keep editing	继续编辑
+Learn more	了解更多
+Leave	离开
+Leave %1$s?	离开 %1$s？
+Left %1$s	已离开 %1$s
+Link	链接
+Link deleted	链接已删除
+List	列表
+Mark as important	标为重要
+Medium	中
+Mention	提及
+Move	移动
+Move down	下移
+Move to initiative…	移动到计划…
+Move to project…	移动到项目…
+Move up	上移
+My teams	我的团队
+Name	名称
+Needs input	需要输入
+Needs your review	需要你审查
+Never	从不
+New document	新建文档
+New initiative	新建计划
+New initiative update	新建计划更新
+New issue from comment	从评论创建任务
+New issue in %1$s	在 %1$s 中新建任务
+New project	新建项目
+New project update	新建项目更新
+New section	新建分区
+New sub-issue from comment	从评论创建子任务
+Newest first	最新优先
+Next week	下周
+No SLA	无 SLA
+No active drafts	暂无活动草稿
+No author	无作者
+No conversations to show	暂无对话
+No cycles to show	暂无周期
+No description	无描述
+No documents to show	暂无文档
+No estimate	无估算
+No grouping	不分组
+No hidden items	没有隐藏项目
+No initiative	无计划
+No initiatives to show	暂无计划
+No issues assigned to you	暂无分配给你的任务
+No issues created by you	暂无你创建的任务
+No issues to show	暂无任务
+No issues you are subscribed to	暂无你订阅的任务
+No items	暂无项目
+No lead	无负责人
+No lead team	无主负责团队
+No matches found	未找到匹配项
+No matching issues	没有匹配的任务
+No milestone	无里程碑
+No owner	无所有者
+No parent initiative	无上级计划
+No projects to show	暂无项目
+No releases yet	暂无发布
+No requests	暂无请求
+No resolved comments	暂无已解决评论
+No resources	无资源
+No resources to show	暂无资源
+No results for "%1$s"	没有“%1$s”的结果
+No results found	未找到结果
+No reviewers	无审查者
+No skills to show	暂无技能
+No team	无团队
+No team members	暂无团队成员
+No teams to show	暂无团队
+No template	无模板
+No text changes to display	没有可显示的文本更改
+No unread notifications	没有未读通知
+No updates	暂无更新
+No views to show	暂无视图
+Not done	未完成
+Not important	不重要
+Not selected	未选择
+Not set	未设置
+Nothing else is queued up	队列中没有其他内容
+Nothing to review	没有待审查内容
+Nothing to triage	没有待分类内容
+Older	较早
+Oldest first	最早优先
+Open customer	打开客户
+Open cycle %1$s	打开周期 %1$s
+Open in GitHub	在 GitHub 中打开
+Open in GitLab	在 GitLab 中打开
+Open in Linear web	在 Linear 网页版中打开
+Open issue %1$s	打开任务 %1$s
+Open on GitHub	在 GitHub 上打开
+Open on phone	在手机上打开
+Open preview	打开预览
+Open project %1$s	打开项目 %1$s
+Open pull request	打开拉取请求
+Open review	打开审查
+Opened	已打开
+Other	其他
+Other reviewers	其他审查者
+Other teams	其他团队
+Ordering	排序方式
+Parent	上级
+Parent initiative	上级计划
+Parent of	上级任务
+Passed	已通过
+Past 3 months	过去 3 个月
+Past 6 months	过去 6 个月
+Past cycle	上一周期
+Past day	过去一天
+Past month	过去一个月
+Past week	过去一周
+Paused	已暂停
+Pending	等待中
+Personal views	个人视图
+Pin to tab bar	固定到标签栏
+Pinned resources	已固定资源
+Pinned to tab bar	已固定到标签栏
+Planned	已计划
+Post	发布
+Private	私有
+Processing	处理中
+Project comment	项目评论
+Project created	项目已创建
+Project icon	项目图标
+Project milestone	项目里程碑
+Project name	项目名称
+Project row properties	项目行属性
+Project update comment	项目更新评论
+Proposed	已提议
+Pull request comment	拉取请求评论
+Pull request merged	拉取请求已合并
+Queue for merge	加入合并队列

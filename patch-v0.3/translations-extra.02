@@ -1,0 +1,192 @@
+ON	开启
+Objects	对象
+Off	关闭
+On	开启
+Only this initiative	仅此计划
+Open incident status page	打开事件状态页
+Open thread in %1$s	在 %1$s 中打开讨论
+Opened by %1$s	由 %1$s 打开
+Opened by %1$s with %2$d commit	由 %1$s 打开，包含 %2$d 个提交
+Opened by %1$s with %2$d commits	由 %1$s 打开，包含 %2$d 个提交
+Opened with %1$d commit	打开时包含 %1$d 个提交
+Opened with %1$d commits	打开时包含 %1$d 个提交
+Orange	橙色
+Parent pull request queued	上级拉取请求已入队
+Partially checked	部分选中
+Pause	暂停
+Pick a color for "%1$s"	为“%1$s”选择颜色
+Pink	粉色
+Pinned resources in this section will remain on the team home page	此分区中固定的资源会保留在团队主页
+Premium access required	需要高级权限
+Preview building…	正在生成预览…
+Previous cycle	上一周期
+Progress since %1$s	自 %1$s 以来的进度
+Project cannot be changed on a shared issue	共享任务无法更改项目
+Project icon: %1$s	项目图标：%1$s
+Project update for %1$s…	更新项目 %1$s…
+Project update…	项目更新…
+Pull request merge started	已开始合并拉取请求
+Purple	紫色
+Pushed %1$d commit	推送了 %1$d 个提交
+Pushed %1$d commits	推送了 %1$d 个提交
+Quarter	季度
+Queued prompt: %1$s	排队提示：%1$s
+Re-request review from %1$s	再次请求 %1$s 审查
+Red	红色
+Release notes · %1$s	发布说明 · %1$s
+Remove from sub-initiative	从子计划移除
+Remove from sub-initiatives	从子计划移除
+Removed from merge queue	已从合并队列移除
+Removed from merge queue by %1$s	由 %1$s 从合并队列移除
+Removed from merge queue due to a merge conflict	因合并冲突从合并队列移除
+Removed from merge queue due to a merge conflict by %1$s	因合并冲突由 %1$s 从合并队列移除
+Removed from merge queue due to failed checks	因检查失败从合并队列移除
+Removed from merge queue due to failed checks by %1$s	因检查失败由 %1$s 从合并队列移除
+Removed from merge queue when the queue was cleared	清空队列时已从合并队列移除
+Removed from merge queue when the queue was cleared by %1$s	由 %1$s 清空队列时从合并队列移除
+Removed: %1$s	已移除：%1$s
+Reopens	重新打开
+Reply to connected thread	回复已连接的线程
+Resolves	解决
+Review request removed from %1$s	已取消对 %1$s 的审查请求
+Review requested from %1$s	已请求 %1$s 审查
+Review requested from %1$s; request removed	已请求 %1$s 审查；请求已移除
+Review requested from %1$s; request removed from %2$s	已请求 %1$s 审查；已取消对 %2$s 的请求
+Review requested; request removed	已请求审查；请求已移除
+Review requested; request removed from %1$s	已请求审查；已取消对 %1$s 的请求
+SLA	SLA
+Select merge method	选择合并方式
+Set on sub-initiative	应用到子计划
+Set on sub-initiatives	应用到子计划
+Show %1$d activity item	显示 %1$d 条动态
+Show %1$d activity items	显示 %1$d 条动态
+Show %1$d line	显示 %1$d 行
+Show %1$d lines	显示 %1$d 行
+Show %1$d more	再显示 %1$d 项
+Show %1$d more line	再显示 %1$d 行
+Show %1$d more lines	再显示 %1$d 行
+Skipped	已跳过
+Stacked on	堆叠于
+Stop requested by <b>%1$s</b>	<b>%1$s</b> 请求停止
+Stopped responding	已停止响应
+Summary cannot exceed %1$d characters	摘要不能超过 %1$d 个字符
+Support for this content coming soon	即将支持此内容
+Teal	蓝绿色
+The installed web app may interfere with logging in and opening links	已安装的 Web 应用可能会影响登录和打开链接
+There was an error adding this favorite	添加收藏时出错
+There was an error attaching this file	添加附件时出错
+There was an error copying this image	复制图片时出错
+There was an error creating the section	创建分区时出错
+There was an error deleting the link	删除链接时出错
+There was an error deleting the section	删除分区时出错
+There was an error pinning the resource	固定资源时出错
+There was an error posting this update	发布更新时出错
+There was an error removing this favorite	移除收藏时出错
+There was an error renaming the section	重命名分区时出错
+There was an error subscribing to this issue	订阅任务时出错
+There was an error unpinning the resource	取消固定资源时出错
+There was an error unsubscribing from this issue	取消订阅任务时出错
+There was an error updating the team description	更新团队描述时出错
+This app can’t do that	此应用无法执行该操作
+This can change who can access them.	这可能会改变可访问这些内容的人员。
+To	到
+Toggle default context	切换默认上下文
+URL	URL
+Unfavorite "%1$s"	取消收藏“%1$s”
+Used %1$d tool	使用了 %1$d 个工具
+Used %1$d tools	使用了 %1$d 个工具
+Video	视频
+Video: %1$s	视频：%1$s
+View %1$d previous replies	查看之前的 %1$d 条回复
+Violet	紫罗兰色
+Worked for %1$s	已处理 %1$s
+Would you like to save a draft of this initiative update?	是否保存此计划更新的草稿？
+Would you like to save a draft of this issue?	是否保存此任务的草稿？
+Would you like to save a draft of this project update?	是否保存此项目更新的草稿？
+Yellow	黄色
+You can rejoin the team at any time.	你可以随时重新加入团队。
+You will also leave any sub-teams of %1$s that you are a member of.	你也将退出已加入的 %1$s 子团队。
+You won't be able to rejoin the team without a team owner or one of your workspace admins inviting you back.	除非团队所有者或工作区管理员重新邀请，否则你无法重新加入该团队。
+Z–A	Z–A
+assigned self	分配给自己
+assigned to <b>%1$s</b>	分配给 <b>%1$s</b>
+delegated the issue to itself	将任务委派给自身
+delegated to <b>%1$s</b>	委派给 <b>%1$s</b>
+edited	已编辑
+unassigned	已取消分配
+Already playing that content	该内容正在播放
+Animals & Nature	动物与自然
+Audio	音频
+Can’t get that content here	无法在此获取该内容
+Can’t skip any more tracks	无法再跳过更多曲目
+Change the lead team on %2$d sub-initiative that currently uses %1$s.	将当前使用 %1$s 的 %2$d 个子计划更改主负责团队。
+Change the lead team on %2$d sub-initiatives that currently use %1$s.	将当前使用 %1$s 的 %2$d 个子计划更改主负责团队。
+Disable shuffle mode	关闭随机播放
+Disable subtitles	关闭字幕
+Disconnected from media app	已与媒体应用断开连接
+Enable Google Play services	启用 Google Play 服务
+Enable shuffle mode	开启随机播放
+Enable subtitles	开启字幕
+Enter fullscreen	进入全屏
+Exit fullscreen	退出全屏
+Fast forward %d second	快进 %d 秒
+Fast forward %d seconds	快进 %d 秒
+Food & Drink	食物与饮品
+Front	正面
+Get Google Play services	获取 Google Play 服务
+Google Play services availability	Google Play 服务可用性
+Google Play services error	Google Play 服务错误
+Hide player controls	隐藏播放器控件
+Listening on too many devices	正在过多设备上播放
+New version of Google Play services needed. It will update itself shortly.	需要新版 Google Play 服务，系统将很快自动更新。
+Now playing	正在播放
+Only GitHub-supported emojis are available	仅支持 GitHub 可用的表情符号
+Open Play Store	打开 Play 商店
+Photos and videos	照片和视频
+Play	播放
+Pop-Up Window	弹出窗口
+Remove %1$s as the lead team from %2$d sub-initiative that currently uses it.	从当前使用 %1$s 的 %2$d 个子计划中移除其主负责团队。
+Remove %1$s as the lead team from %2$d sub-initiatives that currently use it.	从当前使用 %1$s 的 %2$d 个子计划中移除其主负责团队。
+Rewind %d second	后退 %d 秒
+Rewind %d seconds	后退 %d 秒
+Rewind 15 seconds	后退 15 秒
+Seek to next item	跳到下一项
+Seek to previous item	跳到上一项
+Select AM or PM	选择上午或下午
+Select hour	选择小时
+Select minutes	选择分钟
+Set the lead team to %1$s on %2$d sub-initiative that doesn't have one yet.	将尚无主负责团队的 %2$d 个子计划设置为由 %1$s 负责。
+Set the lead team to %1$s on %2$d sub-initiatives that don't have one yet.	将尚无主负责团队的 %2$d 个子计划设置为由 %1$s 负责。
+Sheet handle	面板拖动条
+Show player controls	显示播放器控件
+Smileys & People	笑脸与人物
+Speed	速度
+Stereo	立体声
+Surround sound	环绕声
+Swipe to select a year, or tap to switch back to selecting a day	滑动选择年份，或点按切回日期选择
+Switch to calendar input mode	切换到日历输入模式
+Switch to selecting a year	切换到年份选择
+Switch to text input mode	切换到文本输入模式
+Symbols	符号
+That content is blocked	该内容已被阻止
+Travel & Places	旅行与地点
+Uninstall web app	卸载 Web 应用
+VR mode	VR 模式
+Voice search	语音搜索
+Year picker visible	年份选择器已显示
+As a Linear employee, you should use the internal build of the Android app to get early access to new features and provide feedback.	作为 Linear 员工，应使用 Android 内部版本以提前体验新功能并提供反馈。
+If you have your work Google account on your phone, consider asking to have your Linear Google account invited instead.	如果手机上已有工作 Google 账户，可以申请改为邀请你的 Linear Google 账户。
+If you haven't been invited yet, reach out to Bryan or Alessandro to get added.	如果尚未收到邀请，请联系 Bryan 或 Alessandro 加入。
+Make sure you're using the Google account that was invited to the internal testing program.	请确认正在使用受邀加入内部测试计划的 Google 账户。
+Once you've been added, accept the invite using the button below.	加入后，请使用下方按钮接受邀请。
+Please use the internal build	请使用内部版本
+added to context	已添加到上下文
+collapse	收起
+delete	删除
+enter	输入
+expand	展开
+expand tabs	展开标签
+play	播放
+show tooltip	显示提示
+space	空格
+tooltip	提示

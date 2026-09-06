@@ -1,0 +1,259 @@
+--- a/app/src/main/java/io/github/zhanfg/linearzh/ModuleMain.java
++++ b/app/src/main/java/io/github/zhanfg/linearzh/ModuleMain.java
+@@ -1,7 +1,12 @@
+ package io.github.zhanfg.linearzh;
+ 
++import android.app.Notification;
++import android.app.NotificationChannel;
++import android.app.NotificationChannelGroup;
++import android.app.NotificationManager;
+ import android.content.Context;
+ import android.content.res.Resources;
++import android.os.Bundle;
+ import android.text.BoringLayout;
+ import android.text.StaticLayout;
+ import android.util.Log;
+@@ -10,6 +15,7 @@
+ import java.lang.reflect.Constructor;
+ import java.lang.reflect.Method;
+ import java.lang.reflect.Modifier;
++import java.util.List;
+ 
+ import io.github.libxposed.api.XposedModule;
+ 
+@@ -20,6 +26,10 @@
+     private static final String COMPOSE_ANNOTATED = "androidx.compose.foundation.text.modifiers.TextAnnotatedStringElement";
+     private static final String COMPOSE_SELECTABLE = "androidx.compose.foundation.text.modifiers.SelectableTextAnnotatedStringElement";
+ 
++    // Linear 1.99.0 obfuscated composable created only for app.linear.ui.settings.LicensesScreen.
++    // It gives us a scoped guard so dependency names/licenses are never passed through the UI dictionary.
++    private static final String LICENSE_RENDERER_199 = "p8d";
++
+     @Override
+     public void onPackageReady(PackageReadyParam param) {
+         if (!TARGET.equals(param.getPackageName())) return;
+@@ -30,6 +40,8 @@
+         count += hookStaticLayout();
+         count += hookBoringLayout();
+         count += hookComposeText(param.getClassLoader());
++        count += hookLicenseRenderer(param.getClassLoader());
++        count += hookNotifications();
+         log(Log.INFO, TAG, "Linear Chinese hooks installed: " + count);
+     }
+ 
+@@ -146,12 +158,6 @@
+         return count;
+     }
+ 
+-    /**
+-     * Linear 1.99.0 is Compose-heavy. Text() normally becomes one of these modifier elements,
+-     * bypassing TextView and often bypassing the resource call sites we can reliably intercept.
+-     * Hooking the display element keeps the translation at the render boundary instead of
+-     * changing Linear's model/network data.
+-     */
+     private int hookComposeText(ClassLoader classLoader) {
+         int count = 0;
+         count += hookComposeSimpleString(classLoader);
+@@ -217,6 +223,202 @@
+         return count;
+     }
+ 
++    private int hookLicenseRenderer(ClassLoader classLoader) {
++        try {
++            Class<?> renderer = Class.forName(LICENSE_RENDERER_199, false, classLoader);
++            int count = 0;
++            for (Method method : renderer.getDeclaredMethods()) {
++                if (!method.getName().equals("a")) continue;
++                method.setAccessible(true);
++                hook(method).intercept(chain -> {
++                    Translator.enterLicenseRender();
++                    try {
++                        return chain.proceed();
++                    } finally {
++                        Translator.exitLicenseRender();
++                    }
++                });
++                count++;
++            }
++            return count;
++        } catch (Throwable error) {
++            log(Log.WARN, TAG, "Linear 1.99 license renderer guard unavailable", error);
++            return 0;
++        }
++    }
++
++    private int hookNotifications() {
++        int count = 0;
++        count += hookNotificationBuild();
++        count += hookNotificationPost();
++        count += hookNotificationActions();
++        count += hookNotificationChannelGroupConstructors();
++        count += hookNotificationChannels();
++        return count;
++    }
++
++    private int hookNotificationBuild() {
++        try {
++            Method build = Notification.Builder.class.getDeclaredMethod("build");
++            hook(build).intercept(chain -> {
++                Object result = chain.proceed();
++                if (result instanceof Notification notification) translateNotification(notification);
++                return result;
++            });
++            return 1;
++        } catch (Throwable error) {
++            log(Log.WARN, TAG, "Notification.Builder.build hook failed", error);
++            return 0;
++        }
++    }
++
++    private int hookNotificationPost() {
++        int count = 0;
++        for (Method method : NotificationManager.class.getDeclaredMethods()) {
++            if (!(method.getName().equals("notify") || method.getName().equals("notifyAsPackage"))) continue;
++            Class<?>[] types = method.getParameterTypes();
++            boolean hasNotification = false;
++            for (Class<?> type : types) if (type == Notification.class) hasNotification = true;
++            if (!hasNotification) continue;
++            try {
++                hook(method).intercept(chain -> {
++                    Object[] args = chain.getArgs().toArray();
++                    for (Object arg : args) {
++                        if (arg instanceof Notification notification) translateNotification(notification);
++                    }
++                    return chain.proceed(args);
++                });
++                count++;
++            } catch (Throwable error) {
++                log(Log.WARN, TAG, "Notification post hook failed: " + method, error);
++            }
++        }
++        return count;
++    }
++
++    private int hookNotificationActions() {
++        int count = 0;
++        try {
++            for (Constructor<?> constructor : Notification.Action.Builder.class.getDeclaredConstructors()) {
++                Class<?>[] types = constructor.getParameterTypes();
++                int textIndex = -1;
++                for (int i = 0; i < types.length; i++) {
++                    if (CharSequence.class.isAssignableFrom(types[i])) { textIndex = i; break; }
++                }
++                if (textIndex < 0) continue;
++                final int index = textIndex;
++                hook(constructor).intercept(chain -> {
++                    Object[] args = chain.getArgs().toArray();
++                    if (index < args.length && args[index] instanceof CharSequence text) {
++                        args[index] = Translator.translateNotificationCharSequence(text);
++                    }
++                    return chain.proceed(args);
++                });
++                count++;
++            }
++        } catch (Throwable error) {
++            log(Log.WARN, TAG, "Notification action hook failed", error);
++        }
++        return count;
++    }
++
++    private int hookNotificationChannelGroupConstructors() {
++        int count = 0;
++        try {
++            for (Constructor<?> constructor : NotificationChannelGroup.class.getDeclaredConstructors()) {
++                Class<?>[] types = constructor.getParameterTypes();
++                int textIndex = -1;
++                for (int i = 0; i < types.length; i++) {
++                    if (CharSequence.class.isAssignableFrom(types[i])) { textIndex = i; break; }
++                }
++                if (textIndex < 0) continue;
++                final int index = textIndex;
++                hook(constructor).intercept(chain -> {
++                    Object[] args = chain.getArgs().toArray();
++                    if (index < args.length && args[index] instanceof CharSequence text) {
++                        args[index] = Translator.translateNotificationCharSequence(text);
++                    }
++                    return chain.proceed(args);
++                });
++                count++;
++            }
++        } catch (Throwable error) {
++            log(Log.WARN, TAG, "Notification channel group constructor hook failed", error);
++        }
++        return count;
++    }
++
++    private int hookNotificationChannels() {
++        int count = 0;
++        for (Method method : NotificationManager.class.getDeclaredMethods()) {
++            if (!(method.getName().equals("createNotificationChannel") ||
++                    method.getName().equals("createNotificationChannels") ||
++                    method.getName().equals("createNotificationChannelGroup") ||
++                    method.getName().equals("createNotificationChannelGroups"))) continue;
++            try {
++                hook(method).intercept(chain -> {
++                    Object[] args = chain.getArgs().toArray();
++                    for (Object arg : args) translateChannelArgument(arg);
++                    return chain.proceed(args);
++                });
++                count++;
++            } catch (Throwable error) {
++                log(Log.WARN, TAG, "Notification channel hook failed: " + method, error);
++            }
++        }
++        return count;
++    }
++
++    private static void translateChannelArgument(Object value) {
++        if (value instanceof NotificationChannel channel) {
++            CharSequence name = channel.getName();
++            if (name != null) channel.setName(Translator.translateNotificationCharSequence(name));
++            String description = channel.getDescription();
++            if (description != null) channel.setDescription(Translator.translateNotification(description));
++            return;
++        }
++        if (value instanceof NotificationChannelGroup group) {
++            if (android.os.Build.VERSION.SDK_INT >= 28) {
++                String description = group.getDescription();
++                if (description != null) group.setDescription(Translator.translateNotification(description));
++            }
++            return;
++        }
++        if (value instanceof List<?> list) {
++            for (Object item : list) translateChannelArgument(item);
++        }
++    }
++
++    private static void translateNotification(Notification notification) {
++        Bundle extras = notification.extras;
++        if (extras == null) return;
++        translateExtra(extras, Notification.EXTRA_TITLE);
++        translateExtra(extras, Notification.EXTRA_TITLE_BIG);
++        translateExtra(extras, Notification.EXTRA_TEXT);
++        translateExtra(extras, Notification.EXTRA_SUB_TEXT);
++        translateExtra(extras, Notification.EXTRA_INFO_TEXT);
++        translateExtra(extras, Notification.EXTRA_SUMMARY_TEXT);
++        translateExtra(extras, Notification.EXTRA_BIG_TEXT);
++
++        CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
++        if (lines != null) {
++            boolean changed = false;
++            CharSequence[] translated = new CharSequence[lines.length];
++            for (int i = 0; i < lines.length; i++) {
++                translated[i] = Translator.translateNotificationCharSequence(lines[i]);
++                changed |= translated[i] != lines[i];
++            }
++            if (changed) extras.putCharSequenceArray(Notification.EXTRA_TEXT_LINES, translated);
++        }
++    }
++
++    private static void translateExtra(Bundle extras, String key) {
++        CharSequence value = extras.getCharSequence(key);
++        if (value == null) return;
++        CharSequence translated = Translator.translateNotificationCharSequence(value);
++        if (translated != value) extras.putCharSequence(key, translated);
++    }
++
+     private static Constructor<?> findStringConstructor(Class<?> type) {
+         for (Constructor<?> constructor : type.getDeclaredConstructors()) {
+             Class<?>[] params = constructor.getParameterTypes();

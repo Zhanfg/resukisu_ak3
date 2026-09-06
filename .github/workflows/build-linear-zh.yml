@@ -31,12 +31,13 @@ jobs:
           cp patch-v0.2/Translator.java src/app/src/main/java/io/github/zhanfg/linearzh/Translator.java
           cat patch-v0.2/translations-extra.tsv >> src/app/src/main/resources/translations.tsv
           sed -i 's/versionCode = 1/versionCode = 2/' src/app/build.gradle.kts
-          sed -i 's/versionName = "0.1.0"/versionName = "0.2.0-linear-1.99"/' src/app/build.gradle.kts
+          sed -i 's/versionName = "0.1.0-linear-1.99"/versionName = "0.2.0-linear-1.99"/' src/app/build.gradle.kts
       - name: Apply v0.3 localization fixes
         run: |
           patch -d src -p1 < patch-v0.3/module.patch
           patch -d src -p1 < patch-v0.3/translator.patch
-          patch -d src -p1 < patch-v0.3/build.patch
+          sed -i 's/versionCode = 2/versionCode = 3/' src/app/build.gradle.kts
+          sed -i 's/versionName = "0.2.0-linear-1.99"/versionName = "0.3.0-linear-1.99"/' src/app/build.gradle.kts
           cat patch-v0.3/translations-extra.* >> src/app/src/main/resources/translations.tsv
           sed -i '1c# Linear 1.99.0 Simplified Chinese exact UI mappings' src/app/src/main/resources/translations.tsv
       - name: Build APK
